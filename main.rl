@@ -29,17 +29,12 @@ void restore_mode() {
     access ctx->;
 
     eol = "\r\n" | "\n" | "\r";
-    padding = space*;
+    padding = [ \t]*;
 
-    # --- Actions ---
-    # 重点：在响应内容前面加上 \r\n，确保与输入的指令行分开
     action on_heartbeat { printf("OK\r\n"); }
     action on_echo_off  { ctx->echo_en = false; printf("OK\r\n"); }
     action on_echo_on   { ctx->echo_en = true;  printf("OK\r\n"); }
-    action on_error     { printf("ERROR\r\n"); }
 
-    # --- Logic ---
-    
     at_core = "AT" (
         eol @on_heartbeat |
         "E0" eol @on_echo_off |
@@ -47,14 +42,7 @@ void restore_mode() {
         "+TEST" eol @on_heartbeat
     );
 
-    error_line = ( (any - eol)+ eol ) %on_error;
-
-    # 这里的 $do_echo 会捕捉每一个字符，包括最后的换行符
-    main := (
-        (padding at_core) | 
-        (padding eol)     | 
-        error_line
-    )*;
+    main := ( padding ( at_core | eol ) )*;
 
     write data;
 }%%
@@ -62,6 +50,7 @@ void restore_mode() {
 int main() {
     at_ctx_t at_ctx = { .echo_en = true };
     at_ctx_t *ctx = &at_ctx;
+    bool skipping = false;
 
     set_raw_mode();
     atexit(restore_mode);
@@ -73,15 +62,9 @@ int main() {
     int c;
     while ((c = getchar()) != EOF) {
         char input = (char)c;
-        const char *p = &input;
-        const char *pe = p + 1;
-        const char *eof = NULL;
 
-        // 方案：不要在 Ragel 内部处理 EOL 的回显，在外部处理更可控
-        // 删掉 Ragel 里的 action do_echo 对 \r \n 的判断，改用以下逻辑：
         if (ctx->echo_en) {
             if (input == '\r' || input == '\n') {
-                // 用户按下回车，我们手动给一个换行回显
                 printf("\r\n");
                 fflush(stdout);
             } else if (input >= 32) {
@@ -90,10 +73,30 @@ int main() {
             }
         }
 
+        if (skipping) {
+            if (input == '\r' || input == '\n') {
+                printf("ERROR\r\n");
+                fflush(stdout);
+                skipping = false;
+                %% write init;
+            }
+            continue;
+        }
+
+        const char *p = &input;
+        const char *pe = p + 1;
+        const char *eof = NULL;
+
         %% write exec;
 
         if (ctx->cs == at_parser_error) {
-            %% write init;
+            if (input == '\r' || input == '\n') {
+                printf("ERROR\r\n");
+                fflush(stdout);
+                %% write init;
+            } else {
+                skipping = true;
+            }
         }
     }
     return 0;

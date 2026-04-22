@@ -24,12 +24,12 @@ void set_raw_mode() {
 void restore_mode() {
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
 }
+
 %%{
     machine at_parser;
     access ctx->;
 
     eol = "\r\n" | "\n" | "\r";
-    padding = [ \t]*;
 
     action on_heartbeat { printf("OK\r\n"); }
     action on_echo_off  { ctx->echo_en = false; printf("OK\r\n"); }
@@ -42,7 +42,7 @@ void restore_mode() {
         "+TEST" eol @on_heartbeat
     );
 
-    main := ( padding ( at_core | eol ) )*;
+    main := ( at_core | eol )*;
 
     write data;
 }%%
@@ -64,13 +64,8 @@ int main() {
         char input = (char)c;
 
         if (ctx->echo_en) {
-            if (input == '\r' || input == '\n') {
-                printf("\r\n");
-                fflush(stdout);
-            } else if (input >= 32) {
-                putchar(input);
-                fflush(stdout);
-            }
+            putchar(input);
+            fflush(stdout);
         }
 
         if (skipping) {

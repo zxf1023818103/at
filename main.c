@@ -26,75 +26,66 @@ void restore_mode() {
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
 }
 
-#line 28 "main.c"
+
+#line 29 "main.c"
 static const signed char _at_parser_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 0
 };
 
 static const signed char _at_parser_key_offsets[] = {
-	0, 0, 5, 6, 10, 11, 12, 13,
-	14, 16, 18, 20, 22, 27, 32, 37,
-	0
+	0, 0, 1, 5, 6, 7, 8, 9,
+	11, 13, 15, 17, 20, 23, 26, 0
 };
 
 static const char _at_parser_trans_keys[] = {
-	9, 10, 13, 32, 65, 84, 10, 13,
-	43, 69, 84, 69, 83, 84, 10, 13,
-	48, 49, 10, 13, 10, 13, 9, 10,
-	13, 32, 65, 9, 10, 13, 32, 65,
-	9, 10, 13, 32, 65, 9, 10, 13,
-	32, 65, 0
+	84, 10, 13, 43, 69, 84, 69, 83,
+	84, 10, 13, 48, 49, 10, 13, 10,
+	13, 10, 13, 65, 10, 13, 65, 10,
+	13, 65, 10, 13, 65, 0
 };
 
 static const signed char _at_parser_single_lengths[] = {
-	0, 5, 1, 4, 1, 1, 1, 1,
-	2, 2, 2, 2, 5, 5, 5, 5,
-	0
+	0, 1, 4, 1, 1, 1, 1, 2,
+	2, 2, 2, 3, 3, 3, 3, 0
 };
 
 static const signed char _at_parser_range_lengths[] = {
 	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0
+	0, 0, 0, 0, 0, 0, 0, 0
 };
 
 static const signed char _at_parser_index_offsets[] = {
-	0, 0, 6, 8, 13, 15, 17, 19,
-	21, 24, 27, 30, 33, 39, 45, 51,
-	0
+	0, 0, 2, 7, 9, 11, 13, 15,
+	18, 21, 24, 27, 31, 35, 39, 0
 };
 
 static const signed char _at_parser_cond_targs[] = {
-	1, 12, 12, 1, 2, 0, 3, 0,
-	12, 13, 4, 9, 0, 5, 0, 6,
-	0, 7, 0, 8, 0, 12, 13, 0,
-	10, 11, 0, 12, 14, 0, 12, 15,
-	0, 1, 12, 12, 1, 2, 0, 1,
-	12, 12, 1, 2, 0, 1, 12, 12,
-	1, 2, 0, 1, 12, 12, 1, 2,
-	0, 0, 1, 2, 3, 4, 5, 6,
-	7, 8, 9, 10, 11, 12, 13, 14,
-	15, 0
+	2, 0, 11, 12, 3, 8, 0, 4,
+	0, 5, 0, 6, 0, 7, 0, 11,
+	12, 0, 9, 10, 0, 11, 13, 0,
+	11, 14, 0, 11, 11, 1, 0, 11,
+	11, 1, 0, 11, 11, 1, 0, 11,
+	11, 1, 0, 0, 1, 2, 3, 4,
+	5, 6, 7, 8, 9, 10, 11, 12,
+	13, 14, 0
 };
 
 static const signed char _at_parser_cond_actions[] = {
-	0, 0, 0, 0, 0, 0, 0, 0,
-	1, 1, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 1, 1, 0,
-	0, 0, 0, 3, 3, 0, 5, 5,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	1, 0, 0, 0, 0, 0, 3, 0,
-	0, 0, 0, 0, 5, 0, 0, 0,
+	0, 0, 1, 1, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 1,
+	1, 0, 0, 0, 0, 3, 3, 0,
+	5, 5, 0, 0, 0, 0, 0, 1,
+	0, 0, 0, 3, 0, 0, 0, 5,
 	0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0
+	0, 0, 0
 };
 
-static const int at_parser_start = 12;
-static const int at_parser_first_final = 12;
+static const int at_parser_start = 11;
+static const int at_parser_first_final = 11;
 static const int at_parser_error = 0;
 
-static const int at_parser_en_main = 12;
+static const int at_parser_en_main = 11;
 
 
 #line 48 "main.rl"
@@ -109,7 +100,7 @@ int main() {
 	atexit(restore_mode);
 	
 
-#line 108 "main.c"
+#line 99 "main.c"
 	{
 		ctx->cs = (int)at_parser_start;
 	}
@@ -124,13 +115,8 @@ int main() {
 		char input = (char)c;
 		
 		if (ctx->echo_en) {
-			if (input == '\r' || input == '\n') {
-				printf("\r\n");
-				fflush(stdout);
-			} else if (input >= 32) {
-				putchar(input);
-				fflush(stdout);
-			}
+			putchar(input);
+			fflush(stdout);
 		}
 		
 		if (skipping) {
@@ -139,12 +125,12 @@ int main() {
 				fflush(stdout);
 				skipping = false;
 
-#line 135 "main.c"
+#line 121 "main.c"
 	{
 					ctx->cs = (int)at_parser_start;
 				}
 				
-#line 81 "main.rl"
+#line 76 "main.rl"
 
 			}
 			continue;
@@ -155,7 +141,7 @@ int main() {
 		const char *eof = NULL;
 		
 
-#line 148 "main.c"
+#line 134 "main.c"
 	{
 			int _klen;
 			unsigned int _trans = 0;
@@ -231,7 +217,7 @@ int main() {
 #line 34 "main.rl"
 								printf("OK\r\n"); }
 							
-#line 223 "main.c"
+#line 209 "main.c"
 
 							break; 
 						}
@@ -240,7 +226,7 @@ int main() {
 #line 35 "main.rl"
 								ctx->echo_en = false; printf("OK\r\n"); }
 							
-#line 231 "main.c"
+#line 217 "main.c"
 
 							break; 
 						}
@@ -249,7 +235,7 @@ int main() {
 #line 36 "main.rl"
 								ctx->echo_en = true;  printf("OK\r\n"); }
 							
-#line 239 "main.c"
+#line 225 "main.c"
 
 							break; 
 						}
@@ -267,7 +253,7 @@ int main() {
 			_out: {}
 		}
 		
-#line 90 "main.rl"
+#line 85 "main.rl"
 
 		
 		if (ctx->cs == at_parser_error) {
@@ -275,12 +261,12 @@ int main() {
 				printf("ERROR\r\n");
 				fflush(stdout);
 
-#line 262 "main.c"
+#line 248 "main.c"
 	{
 					ctx->cs = (int)at_parser_start;
 				}
 				
-#line 96 "main.rl"
+#line 91 "main.rl"
 
 			} else {
 				skipping = true;
